@@ -1,6 +1,6 @@
 # Personal website with an integrated AI assistant (FAQ, error codes, tickets)
 
-> **Live Deployment:** [Deploying to Render - Live URL will be placed here]
+> **Live Deployment:** [https://personal-assistant-website-2psi.onrender.com](https://personal-assistant-website-2psi.onrender.com)
 
 A production-ready Node.js & Express personal website featuring an embedded AI support assistant, transactional SQLite relational storage (`better-sqlite3`), asynchronous MongoDB Atlas telemetry, and real-time Open-Meteo weather forecasting with graceful degradation.
 
