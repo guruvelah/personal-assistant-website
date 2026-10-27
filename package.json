@@ -1,0 +1,24 @@
+{
+  "name": "personal-assistant-website",
+  "version": "1.0.0",
+  "description": "Personal website with an integrated AI support assistant, SQLite database, MongoDB logging, and Open-Meteo weather integration.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongodb": "^6.13.0"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^11.8.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "Guruvelah A S",
+  "license": "ISC"
+}
