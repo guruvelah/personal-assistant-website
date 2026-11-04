@@ -1,5 +1,7 @@
 # Personal website with an integrated AI assistant (Django rewrite)
 
+> **Live Deployment:** [https://personal-assistant-website-2psi.onrender.com](https://personal-assistant-website-2psi.onrender.com)
+
 A production-ready **Django** personal website featuring an embedded AI support assistant, transactional SQLite relational storage (Django ORM), asynchronous MongoDB Atlas telemetry, and real-time Open-Meteo weather forecasting with graceful degradation.
 
 > This is a full rewrite of the original Node.js/Express version of this project onto Django, preserving the exact same URL contract, JSON API shapes, and UI so the same black-box test suite (`test_suite.js`) passes against either backend.

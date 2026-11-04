@@ -1,4 +1,4 @@
-const BASE_URL = 'https://REPLACE-WITH-YOUR-RENDER-URL.onrender.com';
+const BASE_URL = 'https://personal-assistant-website-2psi.onrender.com';
 
 async function waitAndTest() {
   console.log('====================================================');
