@@ -387,6 +387,7 @@ app.get('/status', async (req, res) => {
           <li>Tickets created: <strong>${ticketCount}</strong></li>
           <li>Journal Mode: <strong>WAL</strong></li>
         </ul>
+        <a href="/admin/tickets" class="card-link">Manage Tickets &rarr;</a>
       </div>
 
       <div class="status-card">
@@ -429,6 +430,70 @@ app.get('/status', async (req, res) => {
   res.send(renderLayout({
     title: 'Status',
     currentPath: '/status',
+    siteOwner: SITE_OWNER,
+    content
+  }));
+});
+
+// 7. Ticket Management Page (/admin/tickets) - full CRUD demo (Read/Update/Delete UI)
+app.get('/admin/tickets', (req, res) => {
+  const tickets = db.getTickets(100);
+
+  const rows = tickets.map(t => `
+    <tr class="ticket-row" data-ticket-id="${t.id}">
+      <td class="col-ticket-num"><span class="code-badge">${escapeHtml(t.ticket_number)}</span></td>
+      <td>${escapeHtml(t.name)}<br><small class="text-muted">${escapeHtml(t.email)}</small></td>
+      <td>${escapeHtml(t.subject)}</td>
+      <td class="col-ticket-msg">${escapeHtml(t.message)}</td>
+      <td>
+        <span class="ticket-status-badge status-${escapeHtml(t.status)}">${escapeHtml(t.status)}</span>
+      </td>
+      <td class="col-ticket-actions">
+        <select class="ticket-status-select form-control" data-ticket-id="${t.id}">
+          <option value="open" ${t.status === 'open' ? 'selected' : ''}>open</option>
+          <option value="in_progress" ${t.status === 'in_progress' ? 'selected' : ''}>in_progress</option>
+          <option value="resolved" ${t.status === 'resolved' ? 'selected' : ''}>resolved</option>
+        </select>
+        <button class="btn btn-xs btn-outline ticket-delete-btn" data-ticket-id="${t.id}">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+
+  const content = `
+    <section class="section-header">
+      <span class="hero-pill">🎫 Ticket Management</span>
+      <h1 class="hero-title">Support Tickets (CRUD)</h1>
+      <p class="section-desc">
+        Tickets are <strong>created</strong> automatically by the assistant or the Contact form. From here you can
+        <strong>read</strong> every ticket, <strong>update</strong> its status, or <strong>delete</strong> it &mdash; all backed by
+        SQLite via <code>/api/tickets</code>.
+      </p>
+    </section>
+
+    <div id="tickets-alert" class="alert hidden"></div>
+
+    <div class="table-responsive">
+      <table class="error-table" id="tickets-table">
+        <thead>
+          <tr>
+            <th>Ticket #</th>
+            <th>Requester</th>
+            <th>Subject</th>
+            <th>Message</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tickets-table-body">
+          ${rows || '<tr><td colspan="6">No tickets yet. Ask the assistant something it cannot answer, or submit the contact form, to create one.</td></tr>'}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  res.send(renderLayout({
+    title: 'Ticket Management',
+    currentPath: '/admin/tickets',
     siteOwner: SITE_OWNER,
     content
   }));
@@ -530,7 +595,35 @@ app.post('/api/feedback', async (req, res) => {
   res.json(result);
 });
 
-// Support Tickets API: validates and persists tickets in SQLite
+// FAQs API: 12 FAQs stored in SQLite, exposed as JSON
+app.get('/api/faqs', (req, res) => {
+  try {
+    const faqs = db.getFaqs();
+    res.json({ count: faqs.length, faqs });
+  } catch (err) {
+    console.error('[API] Error fetching FAQs:', err);
+    res.status(500).json({ error: 'Failed to fetch FAQs', message: err.message });
+  }
+});
+
+// Error Codes API: 9 error codes stored in SQLite, exposed as JSON
+app.get('/api/errors', (req, res) => {
+  try {
+    const errorCodes = db.getErrorCodes();
+    res.json({ count: errorCodes.length, errors: errorCodes });
+  } catch (err) {
+    console.error('[API] Error fetching error codes:', err);
+    res.status(500).json({ error: 'Failed to fetch error codes', message: err.message });
+  }
+});
+
+/* -------------------------------------------------------------
+   SUPPORT TICKETS API (full CRUD backed by SQLite)
+------------------------------------------------------------- */
+
+const VALID_TICKET_STATUSES = ['open', 'in_progress', 'resolved'];
+
+// CREATE: validates and persists a new ticket
 app.post('/api/tickets', (req, res) => {
   const { name, email, subject, message } = req.body || {};
 
@@ -562,6 +655,74 @@ app.post('/api/tickets', (req, res) => {
       code: '500',
       message: err.message
     });
+  }
+});
+
+// READ: list tickets (optionally filtered by ?status=open|in_progress|resolved)
+app.get('/api/tickets', (req, res) => {
+  const { status, limit } = req.query;
+
+  if (status && !VALID_TICKET_STATUSES.includes(status)) {
+    return res.status(400).json({
+      error: 'Invalid status filter',
+      code: 'APP-1001',
+      message: `Status must be one of: ${VALID_TICKET_STATUSES.join(', ')}`
+    });
+  }
+
+  try {
+    const tickets = db.getTickets(Math.min(Number(limit) || 50, 200), status || null);
+    res.json({ count: tickets.length, tickets });
+  } catch (err) {
+    console.error('[Tickets] Error listing tickets:', err);
+    res.status(500).json({ error: 'Failed to list tickets', message: err.message });
+  }
+});
+
+// READ: fetch a single ticket by id
+app.get('/api/tickets/:id', (req, res) => {
+  const ticket = db.getTicketById(req.params.id);
+  if (!ticket) {
+    return res.status(404).json({ error: 'Ticket not found', code: '404' });
+  }
+  res.json({ ticket });
+});
+
+// UPDATE: change ticket status/subject/message (e.g. mark resolved)
+app.patch('/api/tickets/:id', (req, res) => {
+  const { status, subject, message } = req.body || {};
+
+  if (status && !VALID_TICKET_STATUSES.includes(status)) {
+    return res.status(400).json({
+      error: 'Invalid status',
+      code: 'APP-1001',
+      message: `Status must be one of: ${VALID_TICKET_STATUSES.join(', ')}`
+    });
+  }
+
+  try {
+    const ticket = db.updateTicket(req.params.id, { status, subject, message });
+    if (!ticket) {
+      return res.status(404).json({ error: 'Ticket not found', code: '404' });
+    }
+    res.json({ success: true, ticket });
+  } catch (err) {
+    console.error('[Tickets] Error updating ticket:', err);
+    res.status(500).json({ error: 'Failed to update ticket', message: err.message });
+  }
+});
+
+// DELETE: remove a ticket permanently
+app.delete('/api/tickets/:id', (req, res) => {
+  try {
+    const deleted = db.deleteTicket(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Ticket not found', code: '404' });
+    }
+    res.json({ success: true, id: req.params.id });
+  } catch (err) {
+    console.error('[Tickets] Error deleting ticket:', err);
+    res.status(500).json({ error: 'Failed to delete ticket', message: err.message });
   }
 });
 

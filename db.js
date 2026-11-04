@@ -312,8 +312,34 @@ function createTicket({ name, email, subject, message }) {
   };
 }
 
-function getTickets(limit = 50) {
+function getTickets(limit = 50, status = null) {
+  if (status) {
+    return db.prepare("SELECT * FROM tickets WHERE status = ? ORDER BY id DESC LIMIT ?").all(status, limit);
+  }
   return db.prepare("SELECT * FROM tickets ORDER BY id DESC LIMIT ?").all(limit);
+}
+
+function getTicketById(id) {
+  return db.prepare("SELECT * FROM tickets WHERE id = ?").get(id) || null;
+}
+
+function updateTicket(id, { status, subject, message } = {}) {
+  const existing = getTicketById(id);
+  if (!existing) return null;
+
+  const nextStatus = status || existing.status;
+  const nextSubject = subject !== undefined ? subject : existing.subject;
+  const nextMessage = message !== undefined ? message : existing.message;
+
+  db.prepare("UPDATE tickets SET status = ?, subject = ?, message = ? WHERE id = ?")
+    .run(nextStatus, nextSubject, nextMessage, id);
+
+  return getTicketById(id);
+}
+
+function deleteTicket(id) {
+  const info = db.prepare("DELETE FROM tickets WHERE id = ?").run(id);
+  return info.changes > 0;
 }
 
 function getTicketCount() {
@@ -338,6 +364,9 @@ module.exports = {
   searchFaq,
   createTicket,
   getTickets,
+  getTicketById,
+  updateTicket,
+  deleteTicket,
   getTicketCount,
   checkDbHealth
 };

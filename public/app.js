@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 3. Contact Form Submission
   initContactForm();
+
+  // 4. Ticket Management (Admin CRUD) Page
+  initTicketsAdmin();
 });
 
 // Weather fetcher with fallback handling
@@ -245,6 +248,72 @@ function initContactForm() {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Submit Support Ticket';
       }
+    }
+  });
+}
+
+// Ticket Management: update status (PATCH) and delete (DELETE) via /api/tickets
+function initTicketsAdmin() {
+  const tableBody = document.getElementById('tickets-table-body');
+  const alertBox = document.getElementById('tickets-alert');
+  if (!tableBody) return;
+
+  function showAlert(message, isError) {
+    if (!alertBox) return;
+    alertBox.className = `alert ${isError ? 'alert-danger' : 'alert-success'}`;
+    alertBox.textContent = message;
+    setTimeout(() => { alertBox.className = 'alert hidden'; }, 4000);
+  }
+
+  tableBody.addEventListener('change', async (e) => {
+    if (!e.target.classList.contains('ticket-status-select')) return;
+    const select = e.target;
+    const ticketId = select.getAttribute('data-ticket-id');
+    const newStatus = select.value;
+    const row = tableBody.querySelector(`tr[data-ticket-id="${ticketId}"]`);
+    const badge = row ? row.querySelector('.ticket-status-badge') : null;
+
+    try {
+      const res = await fetch(`/api/tickets/${ticketId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Update failed');
+
+      if (badge) {
+        badge.className = `ticket-status-badge status-${newStatus}`;
+        badge.textContent = newStatus;
+      }
+      showAlert(`Ticket #${data.ticket.ticket_number} updated to "${newStatus}".`, false);
+    } catch (err) {
+      showAlert(`Failed to update ticket: ${err.message}`, true);
+    }
+  });
+
+  tableBody.addEventListener('click', async (e) => {
+    if (!e.target.classList.contains('ticket-delete-btn')) return;
+    const btn = e.target;
+    const ticketId = btn.getAttribute('data-ticket-id');
+    if (!confirm('Delete this ticket permanently?')) return;
+
+    btn.disabled = true;
+    try {
+      const res = await fetch(`/api/tickets/${ticketId}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Delete failed');
+
+      const row = tableBody.querySelector(`tr[data-ticket-id="${ticketId}"]`);
+      if (row) row.remove();
+      showAlert(`Ticket #${ticketId} deleted.`, false);
+
+      if (!tableBody.querySelector('tr')) {
+        tableBody.innerHTML = '<tr><td colspan="6">No tickets remaining.</td></tr>';
+      }
+    } catch (err) {
+      btn.disabled = false;
+      showAlert(`Failed to delete ticket: ${err.message}`, true);
     }
   });
 }

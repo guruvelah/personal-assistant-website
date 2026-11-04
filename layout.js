@@ -61,6 +61,7 @@ function renderLayout({ title, currentPath, siteOwner, content, weatherCity = 'C
         <a href="/status" class="footer-link">System Status</a>
         <a href="/faq" class="footer-link">FAQs</a>
         <a href="/errors" class="footer-link">Error Codes</a>
+        <a href="/admin/tickets" class="footer-link">Tickets</a>
       </div>
     </div>
   </footer>

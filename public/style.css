@@ -661,6 +661,54 @@ html, body {
   padding: 0.25rem 0;
 }
 
+.text-muted {
+  color: var(--text-muted);
+}
+
+/* Ticket Management (Admin CRUD) Page */
+.col-ticket-msg {
+  max-width: 260px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.col-ticket-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ticket-status-select {
+  width: auto;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.82rem;
+}
+
+.ticket-status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.ticket-status-badge.status-open {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+
+.ticket-status-badge.status-in_progress {
+  background-color: rgba(129, 140, 248, 0.15);
+  color: #a5b4fc;
+}
+
+.ticket-status-badge.status-resolved {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+}
+
 /* 404 & 500 Error Pages */
 .error-page-wrapper {
   display: flex;

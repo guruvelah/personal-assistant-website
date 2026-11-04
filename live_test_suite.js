@@ -168,6 +168,66 @@ async function waitAndTest() {
     assert('Live weather', false, e.message);
   }
 
+  // 10. GET /api/faqs -> 10+ FAQs from SQL via API
+  try {
+    const res = await fetch(`${BASE_URL}/api/faqs`);
+    const json = await res.json();
+    assert('Live GET /api/faqs returns 10+ FAQs', res.status === 200 && json.count >= 10, `Got count: ${json.count}`);
+  } catch (e) {
+    assert('Live /api/faqs test', false, e.message);
+  }
+
+  // 11. GET /api/errors -> 8+ error codes from SQL via API
+  try {
+    const res = await fetch(`${BASE_URL}/api/errors`);
+    const json = await res.json();
+    assert('Live GET /api/errors returns 8+ error codes', res.status === 200 && json.count >= 8, `Got count: ${json.count}`);
+  } catch (e) {
+    assert('Live /api/errors test', false, e.message);
+  }
+
+  // 12. Full ticket CRUD cycle: Create -> Read -> Update -> Delete -> confirm gone
+  try {
+    const createRes = await fetch(`${BASE_URL}/api/tickets`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'Live CRUD Test', email: 'crud@test.com', subject: 'CRUD', message: 'Full live CRUD cycle verification message' })
+    });
+    const created = await createRes.json();
+    const id = created.ticket && created.ticket.id;
+    assert('Live CRUD: POST /api/tickets creates a ticket', createRes.status === 201 && !!id, `Status ${createRes.status}`);
+
+    const readRes = await fetch(`${BASE_URL}/api/tickets/${id}`);
+    const read = await readRes.json();
+    assert('Live CRUD: GET /api/tickets/:id reads the ticket', readRes.status === 200 && read.ticket.id === id, `Status ${readRes.status}`);
+
+    const updateRes = await fetch(`${BASE_URL}/api/tickets/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'resolved' })
+    });
+    const updated = await updateRes.json();
+    assert('Live CRUD: PATCH /api/tickets/:id updates status', updateRes.status === 200 && updated.ticket.status === 'resolved', `Status ${updateRes.status}`);
+
+    const deleteRes = await fetch(`${BASE_URL}/api/tickets/${id}`, { method: 'DELETE' });
+    assert('Live CRUD: DELETE /api/tickets/:id deletes the ticket', deleteRes.status === 200, `Status ${deleteRes.status}`);
+
+    const confirmRes = await fetch(`${BASE_URL}/api/tickets/${id}`);
+    assert('Live CRUD: GET /api/tickets/:id returns 404 after delete', confirmRes.status === 404, `Status ${confirmRes.status}`);
+  } catch (e) {
+    assert('Live ticket CRUD cycle', false, e.message);
+  }
+
+  // 13. /admin/tickets page renders
+  try {
+    const res = await fetch(`${BASE_URL}/admin/tickets`);
+    const text = await res.text();
+    assert('Live GET /admin/tickets returns 200', res.status === 200, `Got ${res.status}`);
+    assert('Live /admin/tickets contains ticket management table', text.includes('tickets-table'));
+  } catch (e) {
+    assert('Live /admin/tickets page', false, e.message);
+  }
+
   console.log('====================================================');
   console.log(`LIVE RESULTS: ${passed} passed, ${failed} failed`);
   console.log('====================================================');
