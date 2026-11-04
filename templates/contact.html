@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section-header">
+  <span class="hero-pill">📬 Get In Touch</span>
+  <h1 class="hero-title">Contact &amp; Support Ticketing</h1>
+  <p class="section-desc">
+    Have a question, collaboration inquiry, or support request? Fill out the form below to file a ticket directly in our SQLite database.
+  </p>
+</section>
+
+<div class="contact-wrapper">
+  <div class="contact-card">
+    <form id="contact-form" class="contact-form">
+      <div id="contact-alert" class="alert hidden"></div>
+
+      <div class="form-group">
+        <label for="contact-name">Your Full Name</label>
+        <input type="text" id="contact-name" name="name" class="form-control" placeholder="e.g. Jane Doe" required>
+      </div>
+
+      <div class="form-group">
+        <label for="contact-email">Email Address</label>
+        <input type="email" id="contact-email" name="email" class="form-control" placeholder="e.g. jane@example.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="contact-subject">Subject</label>
+        <input type="text" id="contact-subject" name="subject" class="form-control" placeholder="e.g. Project Consultation" required>
+      </div>
+
+      <div class="form-group">
+        <label for="contact-message">Message (Minimum 5 characters)</label>
+        <textarea id="contact-message" name="message" rows="5" class="form-control" placeholder="Describe your inquiry or question in detail..." required></textarea>
+        <small class="form-hint">Messages with fewer than 5 characters will trigger validation error APP-1001.</small>
+      </div>
+
+      <button type="submit" id="contact-submit-btn" class="btn btn-primary btn-block">Submit Support Ticket</button>
+    </form>
+  </div>
+
+  <div class="contact-info-card">
+    <h3>Direct Channels</h3>
+    <p>Prefer connecting directly? Reach out through any of these avenues:</p>
+    <ul class="contact-methods">
+      <li><strong>Location:</strong> Chennai, Tamil Nadu, India</li>
+      <li><strong>GitHub:</strong> <a href="https://github.com/guruvelah" target="_blank" rel="noopener noreferrer">github.com/guruvelah</a></li>
+      <li><strong>Live Assistant:</strong> Available on every page via the floating chat widget</li>
+      <li><strong>System Status:</strong> <a href="/status">Check service health</a></li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

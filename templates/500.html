@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="error-page-wrapper">
+  <div class="error-page-card">
+    <div class="error-num error-num-500">500</div>
+    <h1 class="error-page-title">Internal Server Error</h1>
+    <p class="error-page-message">
+      An unexpected situation arose on the server while attempting to process this request.
+    </p>
+    <div class="error-page-actions">
+      <a href="/" class="btn btn-primary">Return Home</a>
+      <button id="ask-assistant-500" class="btn btn-accent" onclick="window.openAssistant('What does 500 mean?')">
+        💬 Ask the assistant
+      </button>
+    </div>
+  </div>
+</section>
+{% endblock %}

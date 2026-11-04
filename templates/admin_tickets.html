@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section-header">
+  <span class="hero-pill">🎫 Ticket Management</span>
+  <h1 class="hero-title">Support Tickets (CRUD)</h1>
+  <p class="section-desc">
+    Tickets are <strong>created</strong> automatically by the assistant or the Contact form. From here you can
+    <strong>read</strong> every ticket, <strong>update</strong> its status, or <strong>delete</strong> it &mdash; all backed by
+    SQLite via <code>/api/tickets</code>.
+  </p>
+</section>
+
+<div id="tickets-alert" class="alert hidden"></div>
+
+<div class="table-responsive">
+  <table class="error-table" id="tickets-table">
+    <thead>
+      <tr>
+        <th>Ticket #</th>
+        <th>Requester</th>
+        <th>Subject</th>
+        <th>Message</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="tickets-table-body">
+      {% for t in tickets %}
+      <tr class="ticket-row" data-ticket-id="{{ t.id }}">
+        <td class="col-ticket-num"><span class="code-badge">{{ t.ticket_number }}</span></td>
+        <td>{{ t.name }}<br><small class="text-muted">{{ t.email }}</small></td>
+        <td>{{ t.subject }}</td>
+        <td class="col-ticket-msg">{{ t.message }}</td>
+        <td>
+          <span class="ticket-status-badge status-{{ t.status }}">{{ t.status }}</span>
+        </td>
+        <td class="col-ticket-actions">
+          <select class="ticket-status-select form-control" data-ticket-id="{{ t.id }}">
+            <option value="open" {% if t.status == "open" %}selected{% endif %}>open</option>
+            <option value="in_progress" {% if t.status == "in_progress" %}selected{% endif %}>in_progress</option>
+            <option value="resolved" {% if t.status == "resolved" %}selected{% endif %}>resolved</option>
+          </select>
+          <button class="btn btn-xs btn-outline ticket-delete-btn" data-ticket-id="{{ t.id }}">Delete</button>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6">No tickets yet. Ask the assistant something it cannot answer, or submit the contact form, to create one.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

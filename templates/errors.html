@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section-header">
+  <span class="hero-pill">⚠️ Diagnostic Directory</span>
+  <h1 class="hero-title">System &amp; HTTP Error Codes</h1>
+  <p class="section-desc">
+    Comprehensive reference directory of <strong>{{ error_codes|length }}</strong> standardized HTTP and application error codes with diagnoses and resolution procedures.
+  </p>
+</section>
+
+<!-- Desktop Table View -->
+<div class="table-responsive desktop-only">
+  <table class="error-table">
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>HTTP Status</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Recommended Resolution</th>
+        <th>Assistant</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for err in error_codes %}
+      <tr class="error-row">
+        <td class="col-code"><span class="code-badge code-{{ err.status_code }}">{{ err.code }}</span></td>
+        <td class="col-status"><strong>{{ err.status_code }}</strong></td>
+        <td class="col-title">{{ err.title }}</td>
+        <td class="col-desc">{{ err.description }}</td>
+        <td class="col-res">{{ err.resolution }}</td>
+        <td class="col-action">
+          <button class="btn btn-xs btn-outline" onclick="window.openAssistant('What does {{ err.code|escapejs }} mean?')">Ask</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Mobile Stacked Card View (activates on small screens) -->
+<div class="mobile-only error-cards-container">
+  {% for err in error_codes %}
+  <div class="error-mobile-card">
+    <div class="error-card-header">
+      <span class="code-badge code-{{ err.status_code }}">{{ err.code }}</span>
+      <span class="status-num">HTTP {{ err.status_code }}</span>
+    </div>
+    <h3 class="error-card-title">{{ err.title }}</h3>
+    <p class="error-card-desc"><strong>Description:</strong> {{ err.description }}</p>
+    <p class="error-card-res"><strong>Resolution:</strong> {{ err.resolution }}</p>
+    <button class="btn btn-sm btn-outline btn-block" onclick="window.openAssistant('What does {{ err.code|escapejs }} mean?')">Ask Assistant About {{ err.code }}</button>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

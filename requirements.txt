@@ -1,0 +1,6 @@
+Django==5.2.19
+pymongo==4.19.0
+gunicorn==26.2.0
+whitenoise==6.12.0
+python-dotenv==1.2.4
+requests==2.34.2

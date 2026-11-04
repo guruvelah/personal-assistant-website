@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero-section">
+  <div class="hero-content">
+    <span class="hero-pill">🚀 Portfolio &amp; Intelligent Assistant</span>
+    <h1 class="hero-title">Engineering Reliable Web Systems &amp; Autonomous Agents</h1>
+    <p class="hero-subtitle">
+      Welcome to my portfolio! I am <strong>{{ site_owner }}</strong>, a full-stack developer dedicated to building responsive web applications, robust SQL &amp; NoSQL architectures, and context-aware conversational assistants.
+    </p>
+    <div class="hero-actions">
+      <a href="/about" class="btn btn-primary">About Me</a>
+      <a href="/contact" class="btn btn-secondary">Open a Ticket</a>
+      <button class="btn btn-accent open-chat-hero" onclick="window.openAssistant('How does the assistant work?')">💬 Ask Assistant</button>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Core Competencies</h2>
+    <p class="section-desc">Technologies and architectural paradigms leveraged across this platform.</p>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-icon">⚡</div>
+      <h3>Full-Stack Django</h3>
+      <p>Django views and ORM, structured request logging, robust error routing, and server-rendered templates.</p>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🗄️</div>
+      <h3>Dual-Database Architecture</h3>
+      <p>Transactional SQLite via the Django ORM for relational data (FAQs, error codes, tickets) paired with MongoDB Atlas for telemetry and feedback.</p>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🤖</div>
+      <h3>Support Assistant</h3>
+      <p>Multi-stage AI assistant with intelligent regex error-code lookups, FAQ fuzzy matching, automatic ticket escalation, and optional LLM fallback.</p>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">☁️</div>
+      <h3>Cloud &amp; Resilient APIs</h3>
+      <p>CI/CD deployment to Render with timeout-protected third-party integrations (Open-Meteo weather with fallback).</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Featured Projects</h2>
+    <p class="section-desc">Practical systems engineered for performance and reliability.</p>
+  </div>
+  <div class="projects-grid">
+    <article class="project-card">
+      <div class="project-badge">Live System</div>
+      <h3>AI-Powered Support Portal</h3>
+      <p>A full-stack portfolio and support ticketing platform featuring a real-time conversational agent, a Django ORM schema, and remote MongoDB telemetry.</p>
+      <div class="project-tags">
+        <span>Django</span><span>Python</span><span>SQLite</span><span>MongoDB</span><span>Open-Meteo</span>
+      </div>
+      <div class="project-links">
+        <a href="/faq" class="card-link">View FAQs &rarr;</a>
+        <a href="/errors" class="card-link">Error Directory &rarr;</a>
+      </div>
+    </article>
+
+    <article class="project-card">
+      <div class="project-badge">Automation &amp; Agents</div>
+      <h3>CampusCRS Course Registration Engine</h3>
+      <p>A Django and Python enterprise registration service enforcing strict concurrency locks, automated prerequisite verification, and database auditing.</p>
+      <div class="project-tags">
+        <span>Python</span><span>Django</span><span>SQLite</span><span>Unit Testing</span>
+      </div>
+      <div class="project-links">
+        <a href="https://github.com/guruvelah/campuscrs-django" target="_blank" rel="noopener noreferrer" class="card-link">GitHub Repository &rarr;</a>
+      </div>
+    </article>
+  </div>
+</section>
+{% endblock %}

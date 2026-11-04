@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section-header">
+  <span class="hero-pill">📊 Telemetry</span>
+  <h1 class="hero-title">System Status &amp; Metrics</h1>
+  <p class="section-desc">
+    Real-time health telemetry across server processes, SQLite transactional storage, and MongoDB telemetry collections.
+  </p>
+</section>
+
+<div class="status-grid">
+  <div class="status-card">
+    <div class="status-indicator {% if sql_health %}status-good{% else %}status-bad{% endif %}"></div>
+    <h3>SQLite Database</h3>
+    <p class="status-label">Status: <strong>{% if sql_health %}OPERATIONAL{% else %}DEGRADED{% endif %}</strong></p>
+    <ul class="status-details">
+      <li>Total FAQs indexed: <strong>{{ faq_count }}</strong></li>
+      <li>Total Error Codes: <strong>{{ error_count }}</strong></li>
+      <li>Tickets created: <strong>{{ ticket_count }}</strong></li>
+      <li>ORM: <strong>Django</strong></li>
+    </ul>
+    <a href="/admin/tickets" class="card-link">Manage Tickets &rarr;</a>
+  </div>
+
+  <div class="status-card">
+    <div class="status-indicator {% if mongo_status == 'ok' %}status-good{% elif mongo_status == 'not_configured' %}status-warn{% else %}status-bad{% endif %}"></div>
+    <h3>MongoDB Atlas</h3>
+    <p class="status-label">Status: <strong>{% if mongo_status == 'ok' %}CONNECTED{% elif mongo_status == 'not_configured' %}NOT CONFIGURED{% else %}ERROR{% endif %}</strong></p>
+    <ul class="status-details">
+      <li>Database Name: <strong>{{ mongodb_db }}</strong></li>
+      <li>Telemetry: <strong>chat_logs, feedback</strong></li>
+      <li>Cluster Tier: <strong>MongoDB Atlas M0 Free Tier</strong></li>
+    </ul>
+  </div>
+
+  <div class="status-card">
+    <div class="status-indicator status-good"></div>
+    <h3>Server Process</h3>
+    <p class="status-label">Status: <strong>HEALTHY</strong></p>
+    <ul class="status-details">
+      <li>Uptime: <strong>{{ uptime_hours }}h {{ uptime_mins }}m ({{ uptime_sec }}s)</strong></li>
+      <li>Framework: <strong>Django</strong></li>
+      <li>Environment: <strong>Production</strong></li>
+    </ul>
+  </div>
+
+  <div class="status-card">
+    <div class="status-indicator status-good"></div>
+    <h3>Weather Service</h3>
+    <p class="status-label">Status: <strong>ACTIVE (3s Timeout)</strong></p>
+    <ul class="status-details">
+      <li>Provider: <strong>Open-Meteo REST API</strong></li>
+      <li>Configured City: <strong>{{ weather_city }}</strong></li>
+      <li>Coordinates: <strong>{{ weather_lat }}, {{ weather_lon }}</strong></li>
+      <li>Fallback Mode: <strong>Graceful degradation</strong></li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

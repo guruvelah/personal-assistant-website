@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section-header">
+  <span class="hero-pill">📚 Knowledge Base</span>
+  <h1 class="hero-title">Frequently Asked Questions</h1>
+  <p class="section-desc">
+    Browse our comprehensive database of <strong>{{ faqs|length }}</strong> frequently asked questions stored in SQLite. Our AI assistant can also answer any of these queries in real time.
+  </p>
+</section>
+
+<div class="faq-list">
+  {% for faq in faqs %}
+  <div class="faq-card" id="faq-{{ faq.id }}">
+    <div class="faq-category">{{ faq.category|default:"General" }}</div>
+    <h3 class="faq-question">Q{{ forloop.counter }}: {{ faq.question }}</h3>
+    <p class="faq-answer">{{ faq.answer }}</p>
+    <button class="btn btn-sm btn-outline ask-faq-btn" onclick="window.openAssistant('{{ faq.question|escapejs }}')">Ask Assistant About This</button>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

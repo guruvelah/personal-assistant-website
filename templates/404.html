@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="error-page-wrapper">
+  <div class="error-page-card">
+    <div class="error-num">404</div>
+    <h1 class="error-page-title">Page Not Found</h1>
+    <p class="error-page-message">
+      The requested path <code>{{ request_path }}</code> could not be found on this server. It may have moved or never existed.
+    </p>
+    <div class="error-page-actions">
+      <a href="/" class="btn btn-primary">Return Home</a>
+      <button id="ask-assistant-404" class="btn btn-accent" onclick="window.openAssistant('What does 404 mean?')">
+        💬 Ask the assistant
+      </button>
+    </div>
+  </div>
+</section>
+{% endblock %}

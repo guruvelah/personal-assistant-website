@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="about-hero">
+  <span class="hero-pill">👨‍💻 About Developer</span>
+  <h1 class="hero-title">About {{ site_owner }}</h1>
+  <p class="hero-subtitle">
+    I am a passionate software engineer and computer science enthusiast specializing in full-stack architecture, systems programming, and artificial intelligence workflows.
+  </p>
+</section>
+
+<div class="about-details-grid">
+  <div class="about-card">
+    <h2>Background &amp; Philosophy</h2>
+    <p>
+      My focus centers on delivering resilient, maintainable, and user-friendly digital experiences. Whether architecting relational SQLite schemas, connecting cloud NoSQL clusters on MongoDB Atlas, or developing responsive UIs that feel natural across desktop and mobile form factors, I prioritize clean design patterns, defensive programming, and zero-defect deployments.
+    </p>
+    <p>
+      This website serves as a practical demonstration of these principles — combining transactional Django ORM operations, automated ticket creation, real-time weather integration with fallback safety, and live telemetry tracking.
+    </p>
+  </div>
+
+  <div class="about-card">
+    <h2>Technical Arsenal</h2>
+    <ul class="tech-list">
+      <li><strong>Languages:</strong> Python, JavaScript (ES6+), TypeScript, C++, SQL, HTML5, CSS3</li>
+      <li><strong>Backend Frameworks:</strong> Django, Express.js, Node.js, Fastify</li>
+      <li><strong>Databases:</strong> SQLite (Django ORM), MongoDB &amp; MongoDB Atlas, PostgreSQL</li>
+      <li><strong>DevOps &amp; Cloud:</strong> Render, GitHub Actions, Docker, Linux, Git</li>
+      <li><strong>AI &amp; Automation:</strong> Prompt Engineering, Anthropic Claude API, Rule-based NLP, Automated Escalation</li>
+    </ul>
+  </div>
+</div>
+
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Key Projects</h2>
+  </div>
+  <div class="projects-grid">
+    <div class="project-card">
+      <h3>Full-Stack Assistant Platform</h3>
+      <p>Integrated Django website featuring an interactive chat assistant on every page that indexes SQLite FAQs, diagnoses HTTP/app error codes, logs conversations to MongoDB Atlas, and generates support tickets.</p>
+    </div>
+    <div class="project-card">
+      <h3>IoT Hardware &amp; Embedded Controller Interfacing</h3>
+      <p>Firmware implementation and sensor data collection integrating Arduino, logic-gate breadboarding, and serial telemetry transmission.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}
